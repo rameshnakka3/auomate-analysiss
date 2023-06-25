@@ -348,8 +348,8 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 app = Flask(__name__)
 
 MAX_SEQUENCE_LENGTH = 900
-MODEL_NAME = 'gpt2'
-TOKENIZER_NAME = 'gpt2'
+MODEL_NAME = 'gpt2-small'
+TOKENIZER_NAME = 'gpt2-small'
 PAD_TOKEN = '[PAD]'
 GENERATED_OUTPUT_MAX_LENGTH = 1024
 CHUNK_SIZE = 1024
