@@ -1,327 +1,327 @@
-# from flask import Flask, render_template, request
-# import requests
-# import json
-# import os
-# import shutil
-# import openai
+# # from flask import Flask, render_template, request
+# # import requests
+# # import json
+# # import os
+# # import shutil
+# # import openai
 
 
-# app = Flask(__name__)
+# # app = Flask(__name__)
 
-# MAX_SEQUENCE_LENGTH = 1024
+# # MAX_SEQUENCE_LENGTH = 1024
 
 
-# def fetch_repositories(user_url):
-#     # Extract GitHub username from the URL
-#     username = user_url.split('/')[-1]
+# # def fetch_repositories(user_url):
+# #     # Extract GitHub username from the URL
+# #     username = user_url.split('/')[-1]
 
-#     # Make a request to the GitHub API to get user repositories
-#     response = requests.get(f"https://api.github.com/users/{username}/repos")
+# #     # Make a request to the GitHub API to get user repositories
+# #     response = requests.get(f"https://api.github.com/users/{username}/repos")
 
-#     if response.status_code == 200:
-#         repositories = json.loads(response.text)
-#         return repositories
-#     else:
-#         raise Exception("Failed to fetch repositories")
+# #     if response.status_code == 200:
+# #         repositories = json.loads(response.text)
+# #         return repositories
+# #     else:
+# #         raise Exception("Failed to fetch repositories")
 
 
-# def preprocess_code(repository):
-#     # Clone the repository locally
-#     repo_name = repository['name']
-#     clone_url = repository['clone_url']
+# # def preprocess_code(repository):
+# #     # Clone the repository locally
+# #     repo_name = repository['name']
+# #     clone_url = repository['clone_url']
 
-#     # Delete the existing directory if it already exists
-#     repo_dir = os.path.join(os.getcwd(), repo_name)
-#     if os.path.exists(repo_dir):
-#         shutil.rmtree(repo_dir)
+# #     # Delete the existing directory if it already exists
+# #     repo_dir = os.path.join(os.getcwd(), repo_name)
+# #     if os.path.exists(repo_dir):
+# #         shutil.rmtree(repo_dir)
 
-#     os.system(f"git clone {clone_url}")
+# #     os.system(f"git clone {clone_url}")
 
-#     # Preprocess code files in the repository
-#     for root, dirs, files in os.walk(repo_dir):
-#         for file in files:
-#             file_path = os.path.join(root, file)
-#             file_extension = os.path.splitext(file_path)[1]
+# #     # Preprocess code files in the repository
+# #     for root, dirs, files in os.walk(repo_dir):
+# #         for file in files:
+# #             file_path = os.path.join(root, file)
+# #             file_extension = os.path.splitext(file_path)[1]
 
-#             if file_extension == '.ipynb':
-#                 preprocess_jupyter_notebook(file_path)
-#             else:
-#                 preprocess_regular_file(file_path)
+# #             if file_extension == '.ipynb':
+# #                 preprocess_jupyter_notebook(file_path)
+# #             else:
+# #                 preprocess_regular_file(file_path)
 
-#     return repo_dir
+# #     return repo_dir
 
 
-# def preprocess_jupyter_notebook(notebook_path):
-#     # Convert Jupyter notebook to Python script
-#     os.system(f"jupyter nbconvert --to script {notebook_path}")
+# # def preprocess_jupyter_notebook(notebook_path):
+# #     # Convert Jupyter notebook to Python script
+# #     os.system(f"jupyter nbconvert --to script {notebook_path}")
 
-#     # Delete the original notebook file
-#     os.remove(notebook_path)
+# #     # Delete the original notebook file
+# #     os.remove(notebook_path)
 
 
-# def preprocess_regular_file(file_path):
-#     # Apply any necessary preprocessing for regular files
-#     # (e.g., removing unnecessary lines, comments, etc.)
-#     # Add your custom preprocessing logic here
-#     pass
+# # def preprocess_regular_file(file_path):
+# #     # Apply any necessary preprocessing for regular files
+# #     # (e.g., removing unnecessary lines, comments, etc.)
+# #     # Add your custom preprocessing logic here
+# #     pass
 
 
-# def evaluate_complexity(code):
-#     # Generate GPT analysis using OpenAI API
-#     response = openai.Completion.create(
-#         engine="text-davinci-003",
-#         prompt=code,
-#         max_tokens=100,
-#         n=1,
-#         stop=None,
-#         temperature=0.7,
-#         top_p=1.0,
-#         frequency_penalty=0.0,
-#         presence_penalty=0.0
-#     )
+# # def evaluate_complexity(code):
+# #     # Generate GPT analysis using OpenAI API
+# #     response = openai.Completion.create(
+# #         engine="text-davinci-003",
+# #         prompt=code,
+# #         max_tokens=100,
+# #         n=1,
+# #         stop=None,
+# #         temperature=0.7,
+# #         top_p=1.0,
+# #         frequency_penalty=0.0,
+# #         presence_penalty=0.0
+# #     )
 
-#     analysis = response.choices[0].text.strip()
-#     return analysis
+# #     analysis = response.choices[0].text.strip()
+# #     return analysis
 
 
-# def collect_code_files(directory):
-#     # Collect code files from the directory
-#     code_files = []
-#     for root, dirs, files in os.walk(directory):
-#         for file in files:
-#             file_path = os.path.join(root, file)
-#             code_files.append(file_path)
-#     return code_files
+# # def collect_code_files(directory):
+# #     # Collect code files from the directory
+# #     code_files = []
+# #     for root, dirs, files in os.walk(directory):
+# #         for file in files:
+# #             file_path = os.path.join(root, file)
+# #             code_files.append(file_path)
+# #     return code_files
 
 
-# def find_most_complex_repository(user_url):
-#     repositories = fetch_repositories(user_url)
+# # def find_most_complex_repository(user_url):
+# #     repositories = fetch_repositories(user_url)
 
-#     max_complexity_score = 0
-#     most_complex_repo = None
+# #     max_complexity_score = 0
+# #     most_complex_repo = None
 
-#     for repository in repositories:
-#         repo_dir = preprocess_code(repository)
-#         code_files = collect_code_files(repo_dir)
+# #     for repository in repositories:
+# #         repo_dir = preprocess_code(repository)
+# #         code_files = collect_code_files(repo_dir)
 
-#         complexity_score = 0
+# #         complexity_score = 0
 
-#         for file_path in code_files:
-#             with open(file_path, 'r') as file:
-#                 code = file.read()
+# #         for file_path in code_files:
+# #             with open(file_path, 'r') as file:
+# #                 code = file.read()
 
-#                 # Split code into smaller parts if it exceeds the maximum sequence length
-#                 parts = split_code(code, MAX_SEQUENCE_LENGTH)
+# #                 # Split code into smaller parts if it exceeds the maximum sequence length
+# #                 parts = split_code(code, MAX_SEQUENCE_LENGTH)
 
-#                 for part in parts:
-#                     complexity_score += evaluate_complexity(part)
+# #                 for part in parts:
+# #                     complexity_score += evaluate_complexity(part)
 
-#         if complexity_score > max_complexity_score:
-#             max_complexity_score = complexity_score
-#             most_complex_repo = repository
+# #         if complexity_score > max_complexity_score:
+# #             max_complexity_score = complexity_score
+# #             most_complex_repo = repository
 
-#         # Clean up the cloned repository directory
-#         shutil.rmtree(repo_dir)
+# #         # Clean up the cloned repository directory
+# #         shutil.rmtree(repo_dir)
 
-#     return most_complex_repo
+# #     return most_complex_repo
 
 
-# def split_code(code, max_length):
-#     parts = []
-#     start = 0
-#     while start < len(code):
-#         end = start + max_length
-#         parts.append(code[start:end])
-#         start = end
-#     return parts
+# # def split_code(code, max_length):
+# #     parts = []
+# #     start = 0
+# #     while start < len(code):
+# #         end = start + max_length
+# #         parts.append(code[start:end])
+# #         start = end
+# #     return parts
 
 
-# def generate_gpt_analysis(repository):
-#     analysis = "This repository has been identified as the most technically complex based on its code complexity and structure. The code within the repository demonstrates advanced techniques and algorithms, requiring a deep understanding of the subject matter. It contains intricate implementations, optimal performance optimizations, and well-designed architecture. Overall, this repository showcases the author's exceptional coding skills and expertise in the field."
+# # def generate_gpt_analysis(repository):
+# #     analysis = "This repository has been identified as the most technically complex based on its code complexity and structure. The code within the repository demonstrates advanced techniques and algorithms, requiring a deep understanding of the subject matter. It contains intricate implementations, optimal performance optimizations, and well-designed architecture. Overall, this repository showcases the author's exceptional coding skills and expertise in the field."
 
-#     return analysis
+# #     return analysis
 
 
-# @app.route('/', methods=['GET', 'POST'])
-# def index():
-#     if request.method == 'POST':
-#         user_url = request.form['user_url']
-#         most_complex_repo = find_most_complex_repository(user_url)
-#         analysis = generate_gpt_analysis(most_complex_repo)
-#         return render_template('result.html', repository=most_complex_repo, analysis=analysis)
-#     return render_template('index.html')
+# # @app.route('/', methods=['GET', 'POST'])
+# # def index():
+# #     if request.method == 'POST':
+# #         user_url = request.form['user_url']
+# #         most_complex_repo = find_most_complex_repository(user_url)
+# #         analysis = generate_gpt_analysis(most_complex_repo)
+# #         return render_template('result.html', repository=most_complex_repo, analysis=analysis)
+# #     return render_template('index.html')
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+# # if __name__ == '__main__':
+# #     app.run(debug=True)
 
 
 
-# from flask import Flask, render_template, request
-# import requests
-# import json
-# import os
-# import shutil
-# import openai
+# # from flask import Flask, render_template, request
+# # import requests
+# # import json
+# # import os
+# # import shutil
+# # import openai
 
 
-# app = Flask(__name__)
+# # app = Flask(__name__)
 
-# MAX_SEQUENCE_LENGTH = 1024
-# ALLOWED_EXTENSIONS = ['.py', '.ipynb', '. java', '. c', '. cpp', '.js', '. cs', '.php', '.rb', ' .go','.rs', '.kt', '.swift', '.m', '.h', ' .scala', '.hs', '.sh', '.bat',' .pl','.lua', '.tel','jl', 'f90', '.f95', '.f03','. sol', '. clj', '.ex','exs','.elm', '.erl', '. fs', '.fsx',' .groovy', '.lisp', '.scm', 'ml', 'mli', '.nim',' .pas','.pascal''.pp' ,' .purs', '.re', '.rei','.ts ','.tsx','v', '. vhdl', ' . vhd']
+# # MAX_SEQUENCE_LENGTH = 1024
+# # ALLOWED_EXTENSIONS = ['.py', '.ipynb', '. java', '. c', '. cpp', '.js', '. cs', '.php', '.rb', ' .go','.rs', '.kt', '.swift', '.m', '.h', ' .scala', '.hs', '.sh', '.bat',' .pl','.lua', '.tel','jl', 'f90', '.f95', '.f03','. sol', '. clj', '.ex','exs','.elm', '.erl', '. fs', '.fsx',' .groovy', '.lisp', '.scm', 'ml', 'mli', '.nim',' .pas','.pascal''.pp' ,' .purs', '.re', '.rei','.ts ','.tsx','v', '. vhdl', ' . vhd']
 
 
-# def fetch_repositories(user_url):
-#     # Extract GitHub username from the URL
-#     username = user_url.split('/')[-1]
+# # def fetch_repositories(user_url):
+# #     # Extract GitHub username from the URL
+# #     username = user_url.split('/')[-1]
 
-#     # Make a request to the GitHub API to get user repositories
-#     response = requests.get(f"https://api.github.com/users/{username}/repos")
+# #     # Make a request to the GitHub API to get user repositories
+# #     response = requests.get(f"https://api.github.com/users/{username}/repos")
 
-#     if response.status_code == 200:
-#         repositories = json.loads(response.text)
-#         return repositories
-#     else:
-#         raise Exception("Failed to fetch repositories")
+# #     if response.status_code == 200:
+# #         repositories = json.loads(response.text)
+# #         return repositories
+# #     else:
+# #         raise Exception("Failed to fetch repositories")
 
 
-# def preprocess_code(repository):
-#     # Clone the repository locally
-#     repo_name = repository['name']
-#     clone_url = repository['clone_url']
+# # def preprocess_code(repository):
+# #     # Clone the repository locally
+# #     repo_name = repository['name']
+# #     clone_url = repository['clone_url']
 
-#     # Delete the existing directory if it already exists
-#     repo_dir = os.path.join(os.getcwd(), repo_name)
-#     if os.path.exists(repo_dir):
-#         shutil.rmtree(repo_dir)
+# #     # Delete the existing directory if it already exists
+# #     repo_dir = os.path.join(os.getcwd(), repo_name)
+# #     if os.path.exists(repo_dir):
+# #         shutil.rmtree(repo_dir)
 
-#     os.system(f"git clone {clone_url}")
+# #     os.system(f"git clone {clone_url}")
 
-#     # Preprocess code files in the repository
-#     for root, dirs, files in os.walk(repo_dir):
-#         for file in files:
-#             file_path = os.path.join(root, file)
-#             file_extension = os.path.splitext(file_path)[1]
+# #     # Preprocess code files in the repository
+# #     for root, dirs, files in os.walk(repo_dir):
+# #         for file in files:
+# #             file_path = os.path.join(root, file)
+# #             file_extension = os.path.splitext(file_path)[1]
 
-#             if is_allowed_extension(file_extension):
-#                 if file_extension == '.ipynb':
-#                     preprocess_jupyter_notebook(file_path)
-#                 else:
-#                     preprocess_regular_file(file_path)
+# #             if is_allowed_extension(file_extension):
+# #                 if file_extension == '.ipynb':
+# #                     preprocess_jupyter_notebook(file_path)
+# #                 else:
+# #                     preprocess_regular_file(file_path)
 
-#     return repo_dir
+# #     return repo_dir
 
 
-# def preprocess_jupyter_notebook(notebook_path):
-#     # Convert Jupyter notebook to Python script
-#     os.system(f"jupyter nbconvert --to script {notebook_path}")
+# # def preprocess_jupyter_notebook(notebook_path):
+# #     # Convert Jupyter notebook to Python script
+# #     os.system(f"jupyter nbconvert --to script {notebook_path}")
 
-#     # Delete the original notebook file
-#     os.remove(notebook_path)
+# #     # Delete the original notebook file
+# #     os.remove(notebook_path)
 
 
-# def preprocess_regular_file(file_path):
-#     # Apply any necessary preprocessing for regular files
-#     # (e.g., removing unnecessary lines, comments, etc.)
-#     # Add your custom preprocessing logic here
-#     pass
+# # def preprocess_regular_file(file_path):
+# #     # Apply any necessary preprocessing for regular files
+# #     # (e.g., removing unnecessary lines, comments, etc.)
+# #     # Add your custom preprocessing logic here
+# #     pass
 
 
-# def is_allowed_extension(file_extension):
-#     return file_extension in ALLOWED_EXTENSIONS
+# # def is_allowed_extension(file_extension):
+# #     return file_extension in ALLOWED_EXTENSIONS
 
 
-# def evaluate_complexity(code):
-#     # Generate GPT analysis using OpenAI API
-#     response = openai.Completion.create(
-#         engine="text-davinci-003",
-#         prompt=code,
-#         max_tokens=100,
-#         n=1,
-#         stop=None,
-#         temperature=0.7,
-#         top_p=1.0,
-#         frequency_penalty=0.0,
-#         presence_penalty=0.0
-#     )
+# # def evaluate_complexity(code):
+# #     # Generate GPT analysis using OpenAI API
+# #     response = openai.Completion.create(
+# #         engine="text-davinci-003",
+# #         prompt=code,
+# #         max_tokens=100,
+# #         n=1,
+# #         stop=None,
+# #         temperature=0.7,
+# #         top_p=1.0,
+# #         frequency_penalty=0.0,
+# #         presence_penalty=0.0
+# #     )
 
-#     analysis = response.choices[0].text.strip()
-#     return analysis
+# #     analysis = response.choices[0].text.strip()
+# #     return analysis
 
 
-# def collect_code_files(directory):
-#     # Collect code files from the directory
-#     code_files = []
-#     for root, dirs, files in os.walk(directory):
-#         for file in files:
-#             file_path = os.path.join(root, file)
-#             file_extension = os.path.splitext(file_path)[1]
+# # def collect_code_files(directory):
+# #     # Collect code files from the directory
+# #     code_files = []
+# #     for root, dirs, files in os.walk(directory):
+# #         for file in files:
+# #             file_path = os.path.join(root, file)
+# #             file_extension = os.path.splitext(file_path)[1]
 
-#             if is_allowed_extension(file_extension):
-#                 code_files.append(file_path)
-#     return code_files
+# #             if is_allowed_extension(file_extension):
+# #                 code_files.append(file_path)
+# #     return code_files
 
 
-# def find_most_complex_repository(user_url):
-#     repositories = fetch_repositories(user_url)
+# # def find_most_complex_repository(user_url):
+# #     repositories = fetch_repositories(user_url)
 
-#     max_complexity_score = 0
-#     most_complex_repo = None
+# #     max_complexity_score = 0
+# #     most_complex_repo = None
 
-#     for repository in repositories:
-#         repo_dir = preprocess_code(repository)
-#         code_files = collect_code_files(repo_dir)
+# #     for repository in repositories:
+# #         repo_dir = preprocess_code(repository)
+# #         code_files = collect_code_files(repo_dir)
 
-#         complexity_score = 0
+# #         complexity_score = 0
 
-#         for file_path in code_files:
-#             with open(file_path, 'r') as file:
-#                 code = file.read()
+# #         for file_path in code_files:
+# #             with open(file_path, 'r') as file:
+# #                 code = file.read()
 
-#                 # Split code into smaller parts if it exceeds the maximum sequence length
-#                 parts = split_code(code, MAX_SEQUENCE_LENGTH)
+# #                 # Split code into smaller parts if it exceeds the maximum sequence length
+# #                 parts = split_code(code, MAX_SEQUENCE_LENGTH)
 
-#                 for part in parts:
-#                     complexity_score += evaluate_complexity(part)
+# #                 for part in parts:
+# #                     complexity_score += evaluate_complexity(part)
 
-#         if complexity_score > max_complexity_score:
-#             max_complexity_score = complexity_score
-#             most_complex_repo = repository
+# #         if complexity_score > max_complexity_score:
+# #             max_complexity_score = complexity_score
+# #             most_complex_repo = repository
 
-#         # Clean up the cloned repository directory
-#         shutil.rmtree(repo_dir)
+# #         # Clean up the cloned repository directory
+# #         shutil.rmtree(repo_dir)
 
-#     return most_complex_repo
+# #     return most_complex_repo
 
 
-# def split_code(code, max_length):
-#     parts = []
-#     start = 0
-#     while start < len(code):
-#         end = start + max_length
-#         parts.append(code[start:end])
-#         start = end
-#     return parts
+# # def split_code(code, max_length):
+# #     parts = []
+# #     start = 0
+# #     while start < len(code):
+# #         end = start + max_length
+# #         parts.append(code[start:end])
+# #         start = end
+# #     return parts
 
 
-# def generate_gpt_analysis(repository):
-#     analysis = "This repository has been identified as the most technically complex based on its code complexity and structure. The code within the repository demonstrates advanced techniques and algorithms, requiring a deep understanding of the subject matter. It contains intricate implementations, optimal performance optimizations, and well-designed architecture. Overall, this repository showcases the author's exceptional coding skills and expertise in the field."
+# # def generate_gpt_analysis(repository):
+# #     analysis = "This repository has been identified as the most technically complex based on its code complexity and structure. The code within the repository demonstrates advanced techniques and algorithms, requiring a deep understanding of the subject matter. It contains intricate implementations, optimal performance optimizations, and well-designed architecture. Overall, this repository showcases the author's exceptional coding skills and expertise in the field."
 
-#     return analysis
+# #     return analysis
 
 
-# @app.route('/', methods=['GET', 'POST'])
-# def index():
-#     if request.method == 'POST':
-#         user_url = request.form['user_url']
-#         most_complex_repo = find_most_complex_repository(user_url)
-#         analysis = generate_gpt_analysis(most_complex_repo)
-#         return render_template('result.html', repository=most_complex_repo, analysis=analysis)
-#     return render_template('index.html')
+# # @app.route('/', methods=['GET', 'POST'])
+# # def index():
+# #     if request.method == 'POST':
+# #         user_url = request.form['user_url']
+# #         most_complex_repo = find_most_complex_repository(user_url)
+# #         analysis = generate_gpt_analysis(most_complex_repo)
+# #         return render_template('result.html', repository=most_complex_repo, analysis=analysis)
+# #     return render_template('index.html')
 
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+# # if __name__ == '__main__':
+# #     app.run(debug=True)
 
 
 
@@ -502,4 +502,5 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False,host='0.0.0.0')
+
